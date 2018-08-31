@@ -1,4 +1,5 @@
 from redis import StrictRedis
+import logging
 
 
 
@@ -15,7 +16,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     # redis数据库配置信息
     REDIS_HOST = "127.0.0.1"
-    REDIS_PORT = "6379"
+    REDIS_PORT = 6379
 
     # 加密字符串
     SECRET_KEY = "dIAWjw/xHnFH+MLXDshe98mbSH8QBchWS0bS36/WFpCZndzeSPdGb++3xdhPIYNJ"
@@ -37,12 +38,16 @@ class DevelopmentConfig(Config):
     """开发阶段项目配置类"""
     # 开启debug模式
     DEBUG = True
+    # 设置日志级别
+    LOG_LEVEL = logging.DEBUG
 
 
 class ProductionConfig(Config):
     """生产阶段项目配置类"""
     # 开启debug模式
     DEBUG = False
+    # 设置日志级别
+    LOG_LEVEL = logging.WARNING
     # 修改数据库配置链接对象
     # 数据库链接配置
     # SQLALCHEMY_DATABASE_URI = "mysql://root:mysql@阿里云ip地址:3306/information01"
