@@ -1,3 +1,4 @@
+# coding=UTF-8
 from logging.handlers import RotatingFileHandler
 from flask_sqlalchemy import  SQLAlchemy
 from redis import StrictRedis
@@ -6,8 +7,16 @@ from flask_session import Session
 from config import config_dict
 from flask import Flask
 import logging
-# 导入蓝图
-from info.modules.index import index_bp
+import pymysql
+pymysql.install_as_MySQLdb()
+
+# 将数据库暴露给外界调用
+# 当app没有值的时候，我们创建一个空的数据库db对象
+db = SQLAlchemy()
+
+# 将redis数据库对象暴露给外界调用
+# # type: StrictRedis作用： 事先声明redis_store以后要保存什么类型的数据
+redis_store = None #type:StrictRedis
 
 def create_log(config_name):
     """"记录日志的函数"""
@@ -35,13 +44,17 @@ def create_app(config_name):
     configClass = config_dict[config_name]
     app.config.from_object(configClass)
     # 3.创建MYSQL数据库对象
-    db = SQLAlchemy(app)
+    db.init_app(app)
     # 创建redis数据库对象
+    global redis_store
     redis_store = StrictRedis(host=configClass.REDIS_HOST, port=configClass.REDIS_PORT)
     # ５.开启csrf后端验证保护机制
     #  提取cookie中的csrf_token和ajax里面的csrf_token进行比较
     csrf = CSRFProtect(app)
     # 6.创建session扩展类对象
     Session(app)
+    # 导入蓝图
+    from info.modules.index import index_bp
+    # 注册蓝图
     app.register_blueprint(index_bp)
     return app
