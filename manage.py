@@ -8,11 +8,6 @@ app = create_app("development")
 manager = Manager(app)
 
 
-@app.route("/")
-def index():
-    # 没有调整之前：　数据存在flask后端服务器　　只是讲session_id使用cookie传给客户端
-    session["name"] = "James"
-    return "hello word"
 
 
 if __name__ == '__main__':

@@ -6,6 +6,8 @@ from flask_session import Session
 from config import config_dict
 from flask import Flask
 import logging
+# 导入蓝图
+from info.modules.index import index_bp
 
 def create_log(config_name):
     """"记录日志的函数"""
@@ -41,4 +43,5 @@ def create_app(config_name):
     csrf = CSRFProtect(app)
     # 6.创建session扩展类对象
     Session(app)
+    app.register_blueprint(index_bp)
     return app
